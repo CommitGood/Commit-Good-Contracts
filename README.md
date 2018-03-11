@@ -1,1 +1,1 @@
-# Commit-Good-Contracts
+# Commit-Good-Smart-Contracts
