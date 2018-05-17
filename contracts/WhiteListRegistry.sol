@@ -1,7 +1,6 @@
 pragma solidity ^0.4.23;
 
 import "./zeppelin/ownership/Ownable.sol";
-import "./zeppelin/math/SafeMath.sol";
 
 /**
  * @title WhiteListRegistry
@@ -9,7 +8,6 @@ import "./zeppelin/math/SafeMath.sol";
  * Owner can add and remove addresses to whitelist.
  */
 contract WhiteListRegistry is Ownable {
-    using SafeMath for uint;
 
     mapping (address => WhiteListInfo) public whitelist;
 
