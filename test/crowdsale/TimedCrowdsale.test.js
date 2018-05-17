@@ -12,10 +12,10 @@ require('chai')
   .should();
 
 const TimedCrowdsale = artifacts.require('./CommitGoodCrowdsale.sol');
-const SimpleToken = artifacts.require('./SimpleToken.sol');
+const CommitGoodToken = artifacts.require('./CommitGoodToken.sol');
 const WhiteListRegistry = artifacts.require('./WhiteListRegistry.sol');
 
-contract('As TimedCrowdsale', async ([investor, wallet]) => {
+contract('As TimedCrowdsale', async ([investor, wallet, owner]) => {
   const rate = new BigNumber(1);
   const value = ether(6);
   const cap = ether(100);
@@ -31,9 +31,9 @@ contract('As TimedCrowdsale', async ([investor, wallet]) => {
     this.closingTime = this.openingTime + timer.duration.weeks(1);
     this.afterClosingTime = this.closingTime + timer.duration.seconds(1);
     this.whiteListRegistry = await WhiteListRegistry.new();
-    this.token = await SimpleToken.new();
+    this.token = await CommitGoodToken.new({ from: owner });
     this.crowdsale = await TimedCrowdsale.new(this.openingTime, this.closingTime, rate, wallet, cap, this.token.address, this.whiteListRegistry.address);
-    await this.token.transfer(this.crowdsale.address, tokenSupply);
+    await this.token.setMintAgent(this.crowdsale.address, true, { from: owner });
     await this.whiteListRegistry.addToWhiteList(investor, ether(1));
   });
 
