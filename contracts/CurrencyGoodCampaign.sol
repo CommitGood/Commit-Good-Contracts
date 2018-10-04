@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.25;
 
 import "./zeppelin/lifecycle/Pausable.sol";
 import "./zeppelin/lifecycle/Destructible.sol";
