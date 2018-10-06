@@ -1,9 +1,8 @@
 pragma solidity ^0.4.25;
 
-import "../zeppelin/ownership/Ownable.sol";
 import "../zeppelin/lifecycle/Destructible.sol";
 
-contract Registry is Ownable, Destructible {
+contract Registry is Destructible {
 
     // Authorized users in the system
     mapping (address => bool) users;
