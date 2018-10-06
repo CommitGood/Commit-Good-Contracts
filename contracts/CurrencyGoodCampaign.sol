@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.4.24;
 
 import "./zeppelin/lifecycle/Pausable.sol";
 import "./zeppelin/lifecycle/Destructible.sol";
@@ -36,9 +36,9 @@ contract CurrencyGoodCampaign is Pausable, Destructible {
      * @param _token Address of the token being sold
      */
     constructor(uint256 _rate, address _wallet, address _buyer, CommitGoodToken _token) public {
-        require(_rate > 0);
-        require(_wallet != address(0));
-        require(_buyer != address(0));
+        require(_rate > 0, "Rate must be greater than 0");
+        require(_wallet != address(0), "0x0 is not a valid address");
+        require(_buyer != address(0), "0x0 is not a valid address");
         rate = _rate;
         wallet = _wallet;
         token = _token;
@@ -49,13 +49,13 @@ contract CurrencyGoodCampaign is Pausable, Destructible {
      * @dev fallback function
      */
     function () external payable {
-        revert();
+        revert("Default payment function is disabled");
     }
 
     modifier validBuyer(address _addr) {
-        require(_addr != address(0));
-        require(_addr != address(this));
-        require(buyer[_addr]);
+        require(_addr != address(0), "0x0 is not a valid address");
+        require(_addr != address(this), "Contract address is not a valid address");
+        require(buyer[_addr], "Address does not match the buyer address");
         _;
     }
 
@@ -84,8 +84,8 @@ contract CurrencyGoodCampaign is Pausable, Destructible {
      * @param _weiAmount Value in wei involved in the purchase
      */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount) internal pure {
-        require(_beneficiary != address(0));
-        require(_weiAmount != 0);
+        require(_beneficiary != address(0), "0x0 is not a valid address");
+        require(_weiAmount != 0, "Wei amount must not equal 0");
     }
 
     /**
@@ -103,7 +103,7 @@ contract CurrencyGoodCampaign is Pausable, Destructible {
      * @param _tokenAmount Number of tokens to be emitted
      */
     function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal {
-        require(token.mint(_beneficiary, _tokenAmount));
+        require(token.mint(_beneficiary, _tokenAmount), "Token mint was not successful");
     }
 
     /**
