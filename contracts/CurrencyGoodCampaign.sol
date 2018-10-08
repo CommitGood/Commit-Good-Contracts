@@ -60,6 +60,15 @@ contract CurrencyGoodCampaign is Pausable, Destructible {
     }
 
     /**
+     * @dev sets the wei rate of the contract
+     * @param _rate Number of token units a buyer gets per wei
+     */
+    function setRate(uint256 _rate) public onlyOwner {
+        require(_rate > 0, "Rate must be greater than 0");
+        rate = _rate;
+    }
+
+    /**
      * @dev low level token purchase
      * @param _beneficiary Address receiving the token purchase
      */
