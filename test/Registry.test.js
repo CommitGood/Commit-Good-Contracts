@@ -34,7 +34,7 @@ contract('Registry', async ([owner, user, charity, nonOwner]) => {
 
     describe('authorizeCharity', async () => {
         it('emits an event', async () => {
-            const { logs } = await this.registry.authroizeCharity(charity, true, { from: owner });
+            const { logs } = await this.registry.authorizeCharity(charity, true, { from: owner });
             const event = logs.find(e => e.event === 'Authorize');
             assert.equal(logs.length, 1);
             should.exist(event);
@@ -44,11 +44,11 @@ contract('Registry', async ([owner, user, charity, nonOwner]) => {
         });
 
         it('rejects a zero address', async () => {
-            await this.registry.authroizeCharity(ZERO_ADDRESS, true).should.be.rejectedWith(EVMRevert);
+            await this.registry.authorizeCharity(ZERO_ADDRESS, true).should.be.rejectedWith(EVMRevert);
         });
 
         it('rejects a non-owner', async () => {
-            await this.registry.authroizeCharity(charity, true, { from: nonOwner }).should.be.rejectedWith(EVMRevert);
+            await this.registry.authorizeCharity(charity, true, { from: nonOwner }).should.be.rejectedWith(EVMRevert);
         });
     });
 
@@ -70,7 +70,7 @@ contract('Registry', async ([owner, user, charity, nonOwner]) => {
         });
 
         it('returns a boolean', async () => {
-            await this.registry.authroizeCharity(charity, true, { from: owner });
+            await this.registry.authorizeCharity(charity, true, { from: owner });
             const result = await this.registry.checkCharity(charity);
             assert.isTrue(result);
         });

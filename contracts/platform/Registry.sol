@@ -57,7 +57,7 @@ contract Registry is Destructible {
      * @param _address the address of the charity
      * @param _enable the authorization status of a charity
      */
-    function authroizeCharity(address _address, bool _enable) public onlyOwner validAddress(_address) {
+    function authorizeCharity(address _address, bool _enable) public onlyOwner validAddress(_address) {
         charities[_address] = _enable;
         emit Authorize(_address, "charity", _enable);
     }
