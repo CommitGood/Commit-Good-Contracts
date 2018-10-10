@@ -620,7 +620,6 @@ contract('CommitGoodToken', async ([owner, recipient, anotherAccount, mintAgent,
 
         describe('when the sender is a valid token mint agent', async () => {
             const fromAgent = mintAgent;
-            const fromOwner = owner;
 
             beforeEach(async () => {
                 await this.token.setMintAgent(mintAgent, true, { from: owner });
