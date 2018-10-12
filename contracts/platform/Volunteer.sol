@@ -18,8 +18,8 @@ contract Volunteer is Destructible {
     // the rate of good contract
     RateOfGood public rateOfGood;
 
-    // default maximum of tokens per verification
-    uint256 reward = 3;
+    // default maximum of tokens per valid verification
+    int256 rate = 3;
 
     /**
      * @param _registry address of the registry contract
@@ -173,7 +173,11 @@ contract Volunteer is Destructible {
         volunteerCampaigns[_charityId][_campaignId].volunteers[_userId] = VolunteerUser(_time, _userId, _user, true);
 
         if (_time * 1 hours >= 1 hours) {
-            require(token.mint(_user, reward), "Unable to mint new tokens");
+            int256 rog = -3;
+            int256 adjustment = rog * (10 ** 16);
+            int256 reward = rate * (10 ** 18);
+            int256 output = reward + adjustment;
+            require(token.mint(_user, uint256(output)), "Unable to mint new tokens");
         }
         
         emit VolunteerVerify(_user, _userId, _charity, _charityId, _campaignId, _time);
