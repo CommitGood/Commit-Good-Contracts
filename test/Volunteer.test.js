@@ -10,7 +10,7 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-contract('Volunteer', async ([owner, user, charity, invalidOwner, unknownUser, unknownCharity]) => {
+contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]) => {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const charityId = 100;
   const campaignId = 200;
