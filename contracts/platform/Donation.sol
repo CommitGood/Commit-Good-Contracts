@@ -44,6 +44,11 @@ contract Donation is Destructible {
         _;
     }
 
+    modifier validId(uint256 _id) {
+        require(_id > 0, "Id must be greater than zero");
+        _;
+    }
+
     /**
      * @dev donates tokens to a charity from a user account
      * @param _user public wallet address of the volunteer
@@ -57,7 +62,9 @@ contract Donation is Destructible {
         uint256 _userId, 
         address _charity, 
         uint256 _charityId, 
-        uint256 _amount) public isUser(_user) isCharity(_charity) returns (bool) {
+        uint256 _amount) public isUser(_user) isCharity(_charity) validId(_userId) validId(_charityId) returns (bool) {
+        require(_amount > 0,"Amount must be greater than zero");
+        require(token.approve(_user, _amount), "Unable to approve amount for transfer");
         require(token.transferFrom(_user, _charity, _amount), "Unable to transfer tokens from account");
         emit UserDonation(_user, _userId, _charity, _charityId, _amount);
         return true;
