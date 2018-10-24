@@ -18,8 +18,9 @@ contract('Donation', async ([owner, user, charity, unknownUser, unknownCharity, 
         this.token = await CommitGoodToken.new({ from: owner });
         this.registry = await Registry.new({ from: owner });
         this.donation = await Donation.new(this.registry.address, this.token.address, { from: owner });
-        this.registry.authorizeUser(user, true, { from: owner});
+        this.registry.authorizeUser(user, true, { from: owner });
         this.registry.authorizeCharity(charity, true, { from: owner });
+        await this.token.setMintAgent(this.donation.address, true, { from: owner });
     });
 
     describe('Creating a valid contract', async () => {
@@ -52,31 +53,25 @@ contract('Donation', async ([owner, user, charity, unknownUser, unknownCharity, 
         });
 
         describe('valid donations', async () => {
-            const amount = 100;
             const donation = 50;
-
-            beforeEach(async () => {
-                await this.token.setMintAgent(mintAgent, true, { from: owner });
-                await this.token.mint(user, amount, { from: mintAgent });
-            });
+            const reward = 3;
 
             it('emits an event', async () => {
-                const { logs } = await this.donation.donate(user, userId, charity, charityId, donation);
+                const { logs } = await this.donation.donate(user, userId, charity, charityId, donation, reward);
                 const event = logs.find(e => e.event === 'UserDonation');
                 should.exist(event);
                 event.args.user.should.equal(user);
                 event.args.userId.should.be.bignumber.equal(userId);
                 event.args.charity.should.equal(charity);
                 event.args.charityId.should.be.bignumber.equal(charityId);
-                event.args.amount.should.be.bignumber.equal(donation);
+                event.args.donation.should.be.bignumber.equal(donation);
+                event.args.reward.should.be.bignumber.equal(reward);
             });
 
-            it('transfers the balance', async () => {
-                await this.donation.donate(user, userId, charity, charityId, donation);
-                const userBalance = await this.token.balanceOf(user);
-                const charityBalance = await this.token.balanceOf(charity);
-                userBalance.should.be.bignumber.equal(donation);
-                charityBalance.should.be.bignumber.equal(donation);
+            it('should mint tokens', async () => {
+                await this.donation.donate(user, userId, charity, charityId, donation, reward);
+                const balance = await this.token.balanceOf(user);
+                assert.equal(balance, reward);
             });
         });
     });

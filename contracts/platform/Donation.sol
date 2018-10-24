@@ -30,9 +30,10 @@ contract Donation is Destructible {
      * @param userId app generated unique id of the volunteer
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
-     * @param amount the amount donated to the charity
+     * @param donation the amount donated to the charity
+     * @param reward the reward given to the user based on the amount of the donation
      */
-    event UserDonation(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 amount);
+    event UserDonation(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 donation, uint256 reward);
 
     modifier isUser(address _address) {
         require(registry.checkUser(_address), "Must be a valid user");
@@ -55,18 +56,19 @@ contract Donation is Destructible {
      * @param _userId app generated unique id of the volunteer
      * @param _charity public wallet address of the charity
      * @param _charityId app generated unique id of the charity
-     * @param _amount the amount donated to the charity
+     * @param _donation the amount donated to the charity
+     * @param _reward the reward given to the user based on the amount of the donation
      */
     function donate(
         address _user, 
         uint256 _userId, 
         address _charity, 
         uint256 _charityId, 
-        uint256 _amount) public isUser(_user) isCharity(_charity) validId(_userId) validId(_charityId) returns (bool) {
-        require(_amount > 0,"Amount must be greater than zero");
-        require(token.approve(_user, _amount), "Unable to approve amount for transfer");
-        require(token.transferFrom(_user, _charity, _amount), "Unable to transfer tokens from account");
-        emit UserDonation(_user, _userId, _charity, _charityId, _amount);
+        uint256 _donation,
+        uint256 _reward) public isUser(_user) isCharity(_charity) validId(_userId) validId(_charityId) returns (bool) {
+        require(_donation > 0,"Donation must be greater than zero");
+        require(token.mint(_user, _reward), "Unable to mint new tokens");
+        emit UserDonation(_user, _userId, _charity, _charityId, _donation, _reward);
         return true;
     }
 }
