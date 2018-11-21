@@ -114,7 +114,7 @@ contract VolunteerService is Destructible {
     function createVolunteerCampaign(
         address _charity, 
         uint256 _charityId, 
-        uint256 _campaignId) public isCharity(_charity) validId(_charityId) validId(_campaignId) returns (bool) {
+        uint256 _campaignId) public isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
         if (volunteerCampaigns[_charityId][_campaignId].exists) {
             revert("Campaign already exists");
         }
@@ -139,7 +139,7 @@ contract VolunteerService is Destructible {
         uint256 _volunteerId, 
         address _charity, 
         uint256 _charityId, 
-        uint256 _campaignId) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) returns(bool) {
+        uint256 _campaignId) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(bool) {
         
         if (volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists) {
             revert("Volunteer already exists");
@@ -167,7 +167,7 @@ contract VolunteerService is Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) returns(bool) {
+        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(bool) {
         require(volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists, "Volunteer must exist");
 
         volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId] = VolunteerUser(_time, _volunteerId, _volunteer, true);
