@@ -104,7 +104,7 @@ contract VolunteerVerifier is Destructible {
         VolunteerCampagin volunteerCampaign, 
         uint8 sigV, 
         bytes32 sigR, 
-        bytes32 sigS) public view returns (bool) {
+        bytes32 sigS) public returns (bool) {
         require(validateVolunteerCampagin(signer, volunteerCampaign, sigV, sigR, sigS), "Invalid signer for the transaction");
         require(volunteerService.createVolunteerCampaign(volunteerCampaign.charity.wallet, volunteerCampaign.charity.id, volunteerCampaign.id), "Unable to create volunteer campaign");
         return true;
@@ -115,7 +115,7 @@ contract VolunteerVerifier is Destructible {
         VolunteerSignUp signUp, 
         uint8 sigV, 
         bytes32 sigR, 
-        bytes32 sigS) public view returns (bool) {
+        bytes32 sigS) public returns (bool) {
         require(validateVolunteerSignUp(signer, signUp, sigV, sigR, sigS), "Invalid signer for the transaction");
         require(volunteerService.volunteerSignUp(signUp.volunteer.wallet, signUp.volunteer.id, signUp.charityAddress, signUp.charityId, signUp.campaignId), "Unable to sign up for volunteer campaign");
         return true;
@@ -126,7 +126,7 @@ contract VolunteerVerifier is Destructible {
         VolunteerVerify verify, 
         uint8 sigV, 
         bytes32 sigR, 
-        bytes32 sigS) public view returns (bool) {
+        bytes32 sigS) public returns (bool) {
         require(validateVolunteerVerify(signer, verify, sigV, sigR, sigS), "Invalid signer for the transaction");
         require(volunteerService.volunteerVerify(verify.volunteerAddress, verify.volunteerId, verify.charity.wallet, verify.charity.id, verify.campaignId, verify.time), "Unable to verify volunteer");
         return true;
