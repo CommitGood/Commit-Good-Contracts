@@ -4,16 +4,12 @@ import "../zeppelin/lifecycle/Destructible.sol";
 import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
-import "../CommitGoodToken.sol";
 
 contract VolunteerService is Destructible {
     using SafeMath for uint256;
 
     // the registry contract
     Registry public registry;
-
-    // the token contract
-    CommitGoodToken public token;
 
     // the rate of good contract
     RateOfGood public rateOfGood;
@@ -23,18 +19,14 @@ contract VolunteerService is Destructible {
 
     /**
      * @param _registry address of the registry contract
-     * @param _token address of the token contract
      * @param _rateOfGood address of the rate of good contract
      */
-    constructor(Registry _registry, CommitGoodToken _token, RateOfGood _rateOfGood) public {
+    constructor(Registry _registry, RateOfGood _rateOfGood) public {
         require(_registry != address(0), "0x0 is not a valid address");
         require(_registry != address(this), "Contract address is not a valid address");
-        require(_token != address(0), "0x0 is not a valid address");
-        require(_token != address(this), "Contract address is not a valid address");
         require(_rateOfGood != address(0), "0x0 is not a valid address");
         require(_rateOfGood != address(this), "Contract address is not a valid address");
         registry = _registry;
-        token = _token;
         rateOfGood = _rateOfGood;
     }
 
@@ -167,21 +159,23 @@ contract VolunteerService is Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(bool) {
+        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(int256) {
         require(volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists, "Volunteer must exist");
 
         volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId] = VolunteerUser(_time, _volunteerId, _volunteer, true);
 
+        int256 output = 0; 
+
         if (_time * 1 hours >= 1 hours) {
+            // example rate of good
             int256 rog = -3;
             int256 adjustment = rog * (10 ** 16);
             int256 reward = rate * (10 ** 18);
-            int256 output = reward + adjustment;
-            require(token.mint(_volunteer, uint256(output)), "Unable to mint new tokens");
+            output = reward + adjustment;
         }
         
         emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time);
         
-        return true;
+        return output;
     }
 }

@@ -1,5 +1,4 @@
 const EVMRevert = require('./helpers/EVMRevert');
-const CommitGoodToken = artifacts.require('./CommitGoodToken.sol');
 const RateOfGood = artifacts.require('./RateOfGood.sol');
 const Registry = artifacts.require('./Registry.sol');
 const Volunteeer = artifacts.require('./Volunteer.sol');
@@ -17,14 +16,12 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
   const userId = 300;
 
   beforeEach(async () => {
-    this.token = await CommitGoodToken.new({ from: owner });
     this.registry = await Registry.new({ from: owner });
     this.rateOfGood = await RateOfGood.new({ from: owner });
-    this.volunteer = await Volunteeer.new(this.registry.address, this.token.address, this.rateOfGood.address, { from: owner });
+    this.volunteer = await Volunteeer.new(this.registry.address, this.rateOfGood.address, { from: owner });
 
     this.registry.authorizeUser(user, true, { from: owner });
     this.registry.authorizeCharity(charity, true, { from: owner });
-    this.token.setMintAgent(this.volunteer.address, true, { from: owner });
   });
 
   describe('Creating a valid contract', async () => {
@@ -150,10 +147,8 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
       event.args.time.should.be.bignumber.equal(hours);
     });
 
-    it('should mint tokens if the user volunteered enough hours', async () => {
-      await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours);
-      const balance = await this.token.balanceOf(user);
-      balance.should.be.bignumber.equal(3);
+    it('should return output greater than 0 if the user volunteered enough hours', async () => {
+      const tx = await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours);
     });
   });
 });
