@@ -32,24 +32,28 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
 
   describe('createVolunteerCampaign', async () => {
     it('should fail if the charity is not registered', async () => {
-      await this.volunteer.createVolunteerCampaign(unknownCharity, charityId, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.createVolunteerCampaign(unknownCharity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity id is invalid', async () => {
-      await this.volunteer.createVolunteerCampaign(charity, 0, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.createVolunteerCampaign(charity, 0, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign id is invalid', async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, 0).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.createVolunteerCampaign(charity, charityId, 0, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign already exists', async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId);
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
+      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('should fail if executed by non-owner', async () => {
+      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: unknownUser }).should.be.rejectedWith(EVMRevert);  
     });
 
     it('emits an event', async () => {
-      const { logs } = await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId);
+      const { logs } = await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
       const event = logs.find(e => e.event === 'CreateVolunteerCampaign');
       should.exist(event);
       event.args.charity.should.equal(charity);
@@ -60,35 +64,35 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
 
   describe('signUp', async () => {
     beforeEach(async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId);
+      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
     });
 
     it('should fail if the user address is invalid', async () => {
-      await this.volunteer.signUp(unknownUser, userId, charity, charityId, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(unknownUser, userId, charity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the user id is invalid', async () => {
-      await this.volunteer.signUp(user, 0, charity, charityId, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(user, 0, charity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity address is invalid', async () => {
-      await this.volunteer.signUp(user, userId, unknownCharity, charityId, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(user, userId, unknownCharity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity id is invalid', async () => {
-      await this.volunteer.signUp(user, userId, charity, 0, campaignId).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(user, userId, charity, 0, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign id is invalid', async () => {
-      await this.volunteer.signUp(user, userId, charity, charityId, 0).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(user, userId, charity, charityId, 0, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign doesn\'t exist', async () => {
-      await this.volunteer.signUp(user, userId, charity, charityId, 999).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.signUp(user, userId, charity, charityId, 999, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('emits an event', async () => {
-      const { logs } = await this.volunteer.signUp(user, userId, charity, charityId, campaignId);
+      const { logs } = await this.volunteer.signUp(user, userId, charity, charityId, campaignId, { from: owner });
       const event = logs.find(e => e.event === 'VolunteerSignUp');
       should.exist(event);
       event.args.user.should.equal(user);
@@ -103,40 +107,40 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
     const hours = 3;
 
     beforeEach(async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId);
-      await this.volunteer.signUp(user, userId, charity, charityId, campaignId);
+      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
+      await this.volunteer.signUp(user, userId, charity, charityId, campaignId, { from: owner });
     });
 
     it('should fail if the user address is invalid', async () => {
-      await this.volunteer.verify(unknownUser, userId, charity, charityId, campaignId, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(unknownUser, userId, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the user id is invalid', async () => {
-      await this.volunteer.verify(user, 0, charity, charityId, campaignId, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, 0, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity address is invalid', async () => {
-      await this.volunteer.verify(user, userId, unknownCharity, charityId, campaignId, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, userId, unknownCharity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity id is invalid', async () => {
-      await this.volunteer.verify(user, userId, charity, 0, campaignId, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, userId, charity, 0, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign id is invalid', async () => {
-      await this.volunteer.verify(user, userId, charity, charityId, 0, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, userId, charity, charityId, 0, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign doesn\'t exist', async () => {
-      await this.volunteer.verify(user, userId, charity, charityId, 999, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, userId, charity, charityId, 999, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the user doesn\'t exist', async () => {
-      await this.volunteer.verify(user, 999, charity, charityId, campaignId, hours).should.be.rejectedWith(EVMRevert);
+      await this.volunteer.verify(user, 999, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('emits an event', async () => {
-      const { logs } = await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours);
+      const { logs } = await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours, { from: owner });
       const event = logs.find(e => e.event === 'VolunteerVerify');
       should.exist(event);
       event.args.user.should.equal(user);
@@ -148,7 +152,7 @@ contract('Volunteer', async ([owner, user, charity, unknownUser, unknownCharity]
     });
 
     it('should return output greater than 0 if the user volunteered enough hours', async () => {
-      const tx = await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours);
+      const tx = await this.volunteer.verify(user, userId, charity, charityId, campaignId, hours, { from: owner });
     });
   });
 });

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.4.24;
 
 import "../zeppelin/lifecycle/Destructible.sol";
 import "../zeppelin/math/SafeMath.sol";
@@ -159,20 +159,20 @@ contract VolunteerService is Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(int256) {
+        uint256 _time) public onlyOwner returns(int256) {
         require(volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists, "Volunteer must exist");
 
         volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId] = VolunteerUser(_time, _volunteerId, _volunteer, true);
 
         int256 output = 0; 
 
-        if (_time * 1 hours >= 1 hours) {
-            // example rate of good
-            int256 rog = -3;
-            int256 adjustment = rog * (10 ** 16);
-            int256 reward = rate * (10 ** 18);
-            output = reward + adjustment;
-        }
+        // if (_time * 1 hours >= 1 hours) {
+        //     // example rate of good
+        //     int256 rog = -3;
+        //     int256 adjustment = rog * (10 ** 16);
+        //     int256 reward = rate * (10 ** 18);
+        //     output = reward + adjustment;
+        // }
         
         emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time);
         

@@ -1,7 +1,7 @@
 {
   "name": "commit-good-token",
   "version": "1.0.0",
-  "description": "Commit Good ERC20 Token",
+  "description": "Commit Good Smart Contracts",
   "main": "contracts",
   "directories": {
     "test": "test",
@@ -15,7 +15,6 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "openzeppelin-solidity": "^1.9.0",
-    "truffle": "^4.1.8",
     "truffle-hdwallet-provider": "^0.0.3"
   },
   "devDependencies": {
