@@ -57,7 +57,7 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
     });
   });
 
-  describe('signUp', async () => {
+  describe('volunteerSignUp', async () => {
     beforeEach(async () => {
       await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
     });
@@ -94,7 +94,7 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
     });
   });
 
-  describe('verify', async () => {
+  describe('volunteerVerify', async () => {
     const hours = 3;
 
     beforeEach(async () => {
