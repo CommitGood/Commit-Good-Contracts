@@ -5,7 +5,7 @@ import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
 
-contract VolunteerService is Destructible {
+contract Volunteer is Destructible {
     using SafeMath for uint256;
 
     // the registry contract
@@ -59,24 +59,6 @@ contract VolunteerService is Destructible {
      */
     event EventVolunteerVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 time);
 
-    struct VolunteerUser {
-        uint256 time; // the amount of time the volunteer worked
-        uint256 id; // user id in the database
-        address user; // user public wallet address
-        bool exists; // used to check if the volunteer exists
-    }
-
-    struct VolunteerCampaign {
-        address charity; // charity public wallet address
-        uint256 charityId; // charity id in the database
-        uint256 campaignId; // campaign id in the database
-        bool exists; // used to check if the campaign exists
-        mapping(uint256 => VolunteerUser) volunteers; // maps the campaign is to volunteers
-    }
-
-    // maps charities to volunteer campaigns
-    mapping(uint256 => mapping(uint256 => VolunteerCampaign)) volunteerCampaigns;
-
     modifier isVolunteer(address _address) {
         require(registry.checkUser(_address), "Must be a valid volunteer");
         _;
@@ -92,11 +74,6 @@ contract VolunteerService is Destructible {
         _;
     }
 
-    modifier validCampaign(uint256 _charityId, uint256 _campaignId) {
-        require(volunteerCampaigns[_charityId][_campaignId].exists, "Campaign must exist");
-        _;
-    }
-
     /**
      * @dev creates the volunteer campaign
      * @param _charity public wallet address of the charity
@@ -107,11 +84,6 @@ contract VolunteerService is Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId) public isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
-        if (volunteerCampaigns[_charityId][_campaignId].exists) {
-            revert("Campaign already exists");
-        }
-
-        volunteerCampaigns[_charityId][_campaignId] = VolunteerCampaign(_charity, _charityId, _campaignId, true);
         
         emit EventVolunteerCampaign(_charity, _charityId, _campaignId);
 
@@ -131,13 +103,7 @@ contract VolunteerService is Destructible {
         uint256 _volunteerId, 
         address _charity, 
         uint256 _charityId, 
-        uint256 _campaignId) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) validCampaign(_charityId, _campaignId) onlyOwner returns(bool) {
-        
-        if (volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists) {
-            revert("Volunteer already exists");
-        }
-
-        volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId] = VolunteerUser(0, _volunteerId, _volunteer, true);
+        uint256 _campaignId) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) onlyOwner returns(bool) {
         
         emit EventVolunteerSignUp(_volunteer, _volunteerId, _charity, _charityId, _campaignId);
 
@@ -159,11 +125,7 @@ contract VolunteerService is Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _time) public onlyOwner returns(int256) {
-        require(volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId].exists, "Volunteer must exist");
-
-        volunteerCampaigns[_charityId][_campaignId].volunteers[_volunteerId] = VolunteerUser(_time, _volunteerId, _volunteer, true);
-
+        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) onlyOwner returns(int256) {
         int256 output = 0; 
 
         // if (_time * 1 hours >= 1 hours) {

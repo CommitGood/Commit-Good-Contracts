@@ -7,6 +7,4 @@ contract RateOfGood is Destructible {
     int256 inKindRoG = 0;
     int256 volunteerRoG = 0;
     int256 deliveryRoG = 0;
-
-        
 }
