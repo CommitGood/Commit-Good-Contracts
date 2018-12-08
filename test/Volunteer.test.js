@@ -58,10 +58,6 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
   });
 
   describe('volunteerSignUp', async () => {
-    beforeEach(async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
-    });
-
     it('should fail if the user address is invalid', async () => {
       await this.volunteer.volunteerSignUp(unknownUser, userId, charity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
@@ -96,11 +92,6 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
 
   describe('volunteerVerify', async () => {
     const hours = 3;
-
-    beforeEach(async () => {
-      await this.volunteer.createVolunteerCampaign(charity, charityId, campaignId, { from: owner });
-      await this.volunteer.volunteerSignUp(user, userId, charity, charityId, campaignId, { from: owner });
-    });
 
     it('should fail if the user address is invalid', async () => {
       await this.volunteer.volunteerVerify(unknownUser, userId, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);

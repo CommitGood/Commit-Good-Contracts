@@ -5,7 +5,7 @@ import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
 
-contract InKind is Destructible {
+contract InKindDonation is Destructible {
     using SafeMath for uint256;
 
     // the registry contract

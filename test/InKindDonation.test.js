@@ -58,10 +58,6 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
   });
 
   describe('inKindDonation', async () => {
-    beforeEach(async () => {
-      await this.inKindDonation.createInKindDonationCampaign(charity, charityId, campaignId, { from: owner });
-    });
-
     it('should fail if the user address is invalid', async () => {
       await this.inKindDonation.inKindDonation(unknownUser, userId, charity, charityId, campaignId, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
@@ -95,35 +91,30 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
   });
 
   describe('inKindDonationVerify', async () => {
-    const hours = 3;
-
-    beforeEach(async () => {
-      await this.inKindDonation.createInKindDonationCampaign(charity, charityId, campaignId, { from: owner });
-      await this.inKindDonation.inKindDonation(user, userId, charity, charityId, campaignId, { from: owner });
-    });
+    const donation = 3;
 
     it('should fail if the user address is invalid', async () => {
-      await this.inKindDonation.inKindDonationVerify(unknownUser, userId, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
+      await this.inKindDonation.inKindDonationVerify(unknownUser, userId, charity, charityId, campaignId, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the user id is invalid', async () => {
-      await this.inKindDonation.inKindDonationVerify(user, 0, charity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
+      await this.inKindDonation.inKindDonationVerify(user, 0, charity, charityId, campaignId, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity address is invalid', async () => {
-      await this.inKindDonation.inKindDonationVerify(user, userId, unknownCharity, charityId, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
+      await this.inKindDonation.inKindDonationVerify(user, userId, unknownCharity, charityId, campaignId, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the charity id is invalid', async () => {
-      await this.inKindDonation.inKindDonationVerify(user, userId, charity, 0, campaignId, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
+      await this.inKindDonation.inKindDonationVerify(user, userId, charity, 0, campaignId, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('should fail if the campaign id is invalid', async () => {
-      await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, 0, hours, { from: owner }).should.be.rejectedWith(EVMRevert);
+      await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, 0, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
     it('emits an event', async () => {
-      const { logs } = await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, campaignId, hours, { from: owner });
+      const { logs } = await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, campaignId, donation, { from: owner });
       const event = logs.find(e => e.event === 'EventInKindDonationVerify');
       should.exist(event);
       event.args.user.should.equal(user);
@@ -131,7 +122,7 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
       event.args.charity.should.equal(charity);
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
-      event.args.time.should.be.bignumber.equal(hours);
+      event.args.donation.should.be.bignumber.equal(donation);
     });
   });
 });
