@@ -4,15 +4,10 @@ import "../zeppelin/lifecycle/Destructible.sol";
 import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
+import "./PlatformContract.sol";
 
-contract Volunteer is Destructible {
+contract Volunteer is PlatformContract, Destructible {
     using SafeMath for uint256;
-
-    // the registry contract
-    Registry public registry;
-
-    // the rate of good contract
-    RateOfGood public rateOfGood;
 
     // default maximum of tokens per valid verification
     int256 rate = 1;
@@ -128,13 +123,10 @@ contract Volunteer is Destructible {
         uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) onlyOwner returns(int256) {
         int256 output = 0; 
 
-        // if (_time * 1 hours >= 1 hours) {
-        //     // example rate of good
-        //     int256 rog = -3;
-        //     int256 adjustment = rog * (10 ** 16);
-        //     int256 reward = rate * (10 ** 18);
-        //     output = reward + adjustment;
-        // }
+        if (_time * 1 hours >= 1 hours) {
+            int256 reward = rate * (10 ** 18);
+            output = reward + rateOfGood.getVolunteerRoG();
+        }
         
         emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time);
         

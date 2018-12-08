@@ -4,15 +4,16 @@ import "../zeppelin/lifecycle/Destructible.sol";
 import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
+import "./PlatformContract.sol";
 
-contract Delivery is Destructible {
+contract Delivery is PlatformContract, Destructible {
     using SafeMath for uint256;
 
-    // the registry contract
-    Registry public registry;
+    // reward rate for delivery items under 50lbs and w/n 20 miles
+    int256 rateA = 25;
 
-    // the rate of good contract
-    RateOfGood public rateOfGood;
+    // reward rate for delivery items over 50lbs and w/n 20 miles
+    int256 rateB = 50;
 
     /**
      * @param _registry address of the registry contract

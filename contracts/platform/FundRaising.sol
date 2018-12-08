@@ -4,15 +4,17 @@ import "../zeppelin/lifecycle/Destructible.sol";
 import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
+import "./PlatformContract.sol";
 
-contract MarketPlace is Destructible {
+contract Delivery is PlatformContract, Destructible {
     using SafeMath for uint256;
 
-    // the registry contract
-    Registry public registry;
-
-    // the rate of good contract
-    RateOfGood public rateOfGood;
+    // reward for donated funds b/t $10-24
+    int256 rateA = 1;
+    // reward for donated funds b/t $25-$99
+    int256 rateB = 2;
+    // reward for donated funds over $100
+    int256 rateC = 3;
 
     /**
      * @param _registry address of the registry contract
