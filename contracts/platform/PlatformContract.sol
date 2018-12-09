@@ -24,11 +24,17 @@ contract PlatformContract is Ownable {
      */
     event EventSetRateOfGoodContract(address kontract);
 
+    modifier validAddress(address _address) {
+        require(_address != address(0), "0x0 is not a valid address");
+        require(_address != address(this), "Contract address is not a valid address");
+        _;
+    }
+
     /**
      * @dev sets the regitry contract address
-     * @param Registry the new registry contract address
+     * @param _registry the new registry contract address
      */
-    function setRegistry(Registry _registry) public onlyOwner returns (bool) {
+    function setRegistry(Registry _registry) public validAddress(_registry) onlyOwner returns (bool) {
         registry = _registry;
 
         emit EventSetRegistryContract(_registry);
@@ -38,9 +44,9 @@ contract PlatformContract is Ownable {
 
     /**
      * @dev sets the rate of good contract address
-     * @param RateOfGood the new rate of good contract address
+     * @param _rateOfGood the new rate of good contract address
      */
-    function setRateOfGood(RateOfGood _rateOfGood) public onlyOwner returns (bool) {
+    function setRateOfGood(RateOfGood _rateOfGood) public validAddress(_rateOfGood) onlyOwner returns (bool) {
         rateOfGood = _rateOfGood;
 
         emit EventSetRateOfGoodContract(_rateOfGood);
