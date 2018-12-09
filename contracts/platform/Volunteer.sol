@@ -1,16 +1,14 @@
 pragma solidity ^0.4.24;
 
 import "../zeppelin/lifecycle/Destructible.sol";
-import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
 import "./PlatformContract.sol";
 
 contract Volunteer is PlatformContract, Destructible {
-    using SafeMath for uint256;
 
     // default maximum of tokens per valid verification
-    int256 rate = 1;
+    int256 rate = 1 * (10 ** 18);
 
     /**
      * @param _registry address of the registry contract
@@ -124,8 +122,7 @@ contract Volunteer is PlatformContract, Destructible {
         int256 output = 0; 
 
         if (_time * 1 hours >= 1 hours) {
-            int256 reward = rate * (10 ** 18);
-            output = reward + rateOfGood.getVolunteerRoG();
+            output = rate + rateOfGood.getVolunteerRoG();
         }
         
         emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time);

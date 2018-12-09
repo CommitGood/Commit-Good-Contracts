@@ -1,16 +1,14 @@
 pragma solidity ^0.4.24;
 
 import "../zeppelin/lifecycle/Destructible.sol";
-import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
 import "./PlatformContract.sol";
 
 contract InKindDonation is PlatformContract, Destructible {
-    using SafeMath for uint256;
 
     // default maximum of tokens per valid verification
-    int256 rate = 3;
+    int256 rate = 3 * (10 ** 18);
 
     /**
      * @param _registry address of the registry contract
@@ -124,8 +122,7 @@ contract InKindDonation is PlatformContract, Destructible {
         int256 output = 0;
 
         if (_donation >= 100) {
-            int256 reward = rate * (10 ** 18);
-            output = reward + rateOfGood.getVolunteerRoG();
+            output = rate + rateOfGood.getVolunteerRoG();
         }
 
         emit EventInKindDonationVerify(_donater, _donaterId, _charity, _charityId, _campaignId, _donation);

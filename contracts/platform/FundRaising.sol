@@ -1,20 +1,18 @@
 pragma solidity ^0.4.24;
 
 import "../zeppelin/lifecycle/Destructible.sol";
-import "../zeppelin/math/SafeMath.sol";
 import "./Registry.sol";
 import "./RateOfGood.sol";
 import "./PlatformContract.sol";
 
 contract Delivery is PlatformContract, Destructible {
-    using SafeMath for uint256;
 
     // reward for donated funds b/t $10-24
-    int256 rateA = 1;
+    int256 rateA = 1 * (10 ** 18);
     // reward for donated funds b/t $25-$99
-    int256 rateB = 2;
+    int256 rateB = 2 * (10 ** 18);
     // reward for donated funds over $100
-    int256 rateC = 3;
+    int256 rateC = 3 * (10 ** 18);
 
     /**
      * @param _registry address of the registry contract
