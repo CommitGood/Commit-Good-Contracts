@@ -94,15 +94,12 @@ contract Delivery is PlatformContract, Destructible {
         uint256 _totalWeight) public isCourier(_courier) validId(_courierId) isRecipient(_recipient) validId(_recipientId) onlyOwner returns (int256) {
         
         int256 output = 0;
-        int256 reward = 0;
 
         if (_totalWeight >= 50) {
-            reward = rateB;
+            output = rateB + rateOfGood.getDeliveryRoG();
         } else {
-            reward = rateA;
+            output = rateA + rateOfGood.getDeliveryRoG();
         }
-
-        output = reward + rateOfGood.getVolunteerRoG();
 
         emit EventDeliveryVerify(_courier, _courierId, _recipient, _recipientId, _itemDescription, _totalWeight);
 

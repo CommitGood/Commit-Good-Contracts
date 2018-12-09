@@ -122,7 +122,7 @@ contract InKindDonation is PlatformContract, Destructible {
         int256 output = 0;
 
         if (_donation >= 100) {
-            output = rate + rateOfGood.getVolunteerRoG();
+            output = rate + rateOfGood.getInKindRoG();
         }
 
         emit EventInKindDonationVerify(_donater, _donaterId, _charity, _charityId, _campaignId, _donation);

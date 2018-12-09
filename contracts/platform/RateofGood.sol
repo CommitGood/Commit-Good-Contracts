@@ -7,6 +7,7 @@ contract RateOfGood is Destructible {
     int256 inKindRoG = 0;
     int256 volunteerRoG = 0;
     int256 deliveryRoG = 0;
+    int256 fundRaisingRoG = 0;
 
     /**
      * @dev event for when the in kind donation rog is set
@@ -25,6 +26,12 @@ contract RateOfGood is Destructible {
      * @param value the new value to set
      */
     event EventSetDeliveryRateOfGood(int256 value);
+
+    /**
+     * @dev event for when the fund raising rog is set
+     * @param value the new value to set
+     */
+    event EventSetFundRaisingRateOfGood(int256 value);
 
     /**
      * @dev sets the in kind rog
@@ -81,5 +88,24 @@ contract RateOfGood is Destructible {
      */
     function getDeliveryRoG() public view returns (int256) {
         return deliveryRoG * (10 ** 16);
+    }
+
+    /**
+     * @dev sets the fund raising rog
+     * @param _value the new value to set
+     */
+    function setFundRaisingRoG(int256 _value) public onlyOwner returns (bool) {
+        fundRaisingRoG = _value;
+
+        emit EventSetFundRaisingRateOfGood(_value);
+
+        return true;
+    }
+
+    /**
+     * @dev gets the fund raising rog
+     */
+    function getFundRaisingRoG() public view returns (int256) {
+        return fundRaisingRoG * (10 ** 16);
     }
 }

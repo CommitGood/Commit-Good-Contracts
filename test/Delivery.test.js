@@ -31,8 +31,7 @@ contract('Delivery', async ([_, owner, courier, recipient, unknownCourier, unkno
   });
 
   describe('deliveryRequested', async () => {
-    it('should fail if the recipient address is invalid', async () => {
-      console.log(this.delivery);
+    it('should fail if the recipient address is invalid', async () => { 
       await this.delivery.deliveryRequested(unknownRecipient, recipientId, itemDescription, { from: owner }).should.be.rejectedWith(EVMRevert);
     });
 
@@ -41,7 +40,7 @@ contract('Delivery', async ([_, owner, courier, recipient, unknownCourier, unkno
     });
 
     it('emits an event', async () => {
-      const { logs } = await this.delivery.deliveryRequested(recipient, recipientId, itemDescription, { from: owner })
+      const { logs } = await this.delivery.deliveryRequested(recipient, recipientId, itemDescription, { from: owner });
       const event = logs.find(e => e.event === 'EventDeliveryRequested');
       should.exist(event);
       event.args.recipient.should.equal(recipient);

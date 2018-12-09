@@ -52,4 +52,17 @@ contract('RateOfGood', async ([_, owner, unknownUser]) => {
       event.args.value.should.be.bignumber.equal(value);
     });
   });
+
+  describe('setFundRaisingRoG', async () => {
+    it('should fail if executed by a non-owner', async () => {
+      await this.rateOfGood.setFundRaisingRoG(-1, { from: unknownUser }).should.be.rejectedWith(EVMRevert);  
+    });
+
+    it('emits an event', async () => {
+      const { logs } = await await this.rateOfGood.setFundRaisingRoG(value, { from: owner });
+      const event = logs.find(e => e.event === 'EventSetFundRaisingRateOfGood');
+      should.exist(event);
+      event.args.value.should.be.bignumber.equal(value);
+    });
+  });
 });
