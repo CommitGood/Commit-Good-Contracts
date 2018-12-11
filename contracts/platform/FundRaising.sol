@@ -45,8 +45,9 @@ contract FundRaising is PlatformContract, Destructible {
      * @param campaignId app generated unique id of the campaign
      * @param amount the amount donated
      * @param goalReached lets us know if the goal was reached
+     * @param reward the reward amount
      */
-    event EventFundsDonated(address donator, uint256 donatorId, address charity, uint256 charityId, uint256 campaignId, uint256 amount, bool goalReached);
+    event EventFundsDonated(address donator, uint256 donatorId, address charity, uint256 charityId, uint256 campaignId, uint256 amount, bool goalReached, int256 reward);
 
     modifier isDonator(address _address) {
         require(registry.checkUser(_address), "Must be a valid donator");
@@ -98,19 +99,19 @@ contract FundRaising is PlatformContract, Destructible {
         uint256 _charityId, 
         uint256 _campaignId, 
         uint256 _amount,
-        bool _goalReached) public isDonator(_donator) validId(_donatorId) isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (int256) {
-        int256 output = 0;
+        bool _goalReached) public isDonator(_donator) validId(_donatorId) isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
+        int256 reward = 0;
 
         if (_amount >= 10 && _amount <= 24) {
-            output = rateA + rateOfGood.getFundRaisingRoG();
+            reward = rateA + rateOfGood.getFundRaisingRoG();
         } else if (_amount >= 25 && _amount <= 99) {
-            output = rateB + rateOfGood.getFundRaisingRoG();
-        } else {
-            output = rateC + rateOfGood.getFundRaisingRoG();
+            reward = rateB + rateOfGood.getFundRaisingRoG();
+        } else if (_amount >= 100) {
+            reward = rateC + rateOfGood.getFundRaisingRoG();
         }
 
-        emit EventFundsDonated(_donator, _donatorId, _charity, _charityId, _campaignId, _amount, _goalReached);
+        emit EventFundsDonated(_donator, _donatorId, _charity, _charityId, _campaignId, _amount, _goalReached, reward);
 
-        return output;
+        return true;
     }
 }

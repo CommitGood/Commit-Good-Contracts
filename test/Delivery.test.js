@@ -68,6 +68,7 @@ contract('Delivery', async ([_, owner, courier, recipient, unknownCourier, unkno
 
     it('emits an event', async () => {
       const totalWeight = 1;
+      const reward = 25 * (10 ** 18);
       const { logs } = await this.delivery.deliveryVerify(courier, courierId, recipient, recipientId, itemDescription, totalWeight, { from: owner });
       const event = logs.find(e => e.event === 'EventDeliveryVerify');
       should.exist(event);
@@ -77,6 +78,7 @@ contract('Delivery', async ([_, owner, courier, recipient, unknownCourier, unkno
       event.args.recipientId.should.be.bignumber.equal(recipientId);
       event.args.itemDescription.should.equal(itemDescription);
       event.args.totalWeight.should.be.bignumber.equal(totalWeight);
+      event.args.reward.should.be.bignumber.equal(reward);
     });
   });
 });

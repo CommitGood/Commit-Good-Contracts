@@ -49,8 +49,9 @@ contract Volunteer is PlatformContract, Destructible {
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
      * @param time the amount of time volunteered
+     * @param reward the reward amount
      */
-    event EventVolunteerVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 time);
+    event EventVolunteerVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 time, int256 reward);
 
     modifier isVolunteer(address _address) {
         require(registry.checkUser(_address), "Must be a valid volunteer");
@@ -118,15 +119,15 @@ contract Volunteer is PlatformContract, Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) onlyOwner returns(int256) {
-        int256 output = 0; 
+        uint256 _time) public isVolunteer(_volunteer) isCharity(_charity) validId(_volunteerId) validId(_charityId) validId(_campaignId) onlyOwner returns(bool) {
+        int256 reward = 0; 
 
         if (_time * 1 hours >= 1 hours) {
-            output = rate + rateOfGood.getVolunteerRoG();
+            reward = rate + rateOfGood.getVolunteerRoG();
         }
         
-        emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time);
+        emit EventVolunteerVerify(_volunteer, _volunteerId, _charity, _charityId, _campaignId, _time, reward);
         
-        return output;
+        return true;
     }
 }

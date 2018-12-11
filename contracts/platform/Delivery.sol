@@ -42,8 +42,9 @@ contract Delivery is PlatformContract, Destructible {
      * @param recipientId app generated unique id of the recipient
      * @param itemDescription the item description
      * @param totalWeight the total weight of the item delivered
+     * @param reward the reward amount
      */
-    event EventDeliveryVerify(address courier, uint256 courierId, address recipient, uint256 recipientId, string itemDescription, uint256 totalWeight);
+    event EventDeliveryVerify(address courier, uint256 courierId, address recipient, uint256 recipientId, string itemDescription, uint256 totalWeight, int256 reward);
 
     modifier isCourier(address _address) {
         require(registry.checkUser(_address), "Must be an authorized courier");
@@ -91,18 +92,18 @@ contract Delivery is PlatformContract, Destructible {
         address _recipient, 
         uint256 _recipientId, 
         string _itemDescription,
-        uint256 _totalWeight) public isCourier(_courier) validId(_courierId) isRecipient(_recipient) validId(_recipientId) onlyOwner returns (int256) {
+        uint256 _totalWeight) public isCourier(_courier) validId(_courierId) isRecipient(_recipient) validId(_recipientId) onlyOwner returns (bool) {
         
-        int256 output = 0;
+        int256 reward = 0;
 
         if (_totalWeight >= 50) {
-            output = rateB + rateOfGood.getDeliveryRoG();
+            reward = rateB + rateOfGood.getDeliveryRoG();
         } else {
-            output = rateA + rateOfGood.getDeliveryRoG();
+            reward = rateA + rateOfGood.getDeliveryRoG();
         }
 
-        emit EventDeliveryVerify(_courier, _courierId, _recipient, _recipientId, _itemDescription, _totalWeight);
+        emit EventDeliveryVerify(_courier, _courierId, _recipient, _recipientId, _itemDescription, _totalWeight, reward);
 
-        return output;
+        return true;
     }
 }

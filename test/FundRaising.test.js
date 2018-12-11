@@ -14,7 +14,7 @@ contract('FundRaising', async ([_, owner, user, charity, unknownUser, unknownCha
   const charityId = 100;
   const userId = 200;
   const campaignId = 300;
-  const donation = 5;
+  const donation = 10;
   const goal = 100;
 
   beforeEach(async () => {
@@ -79,6 +79,7 @@ contract('FundRaising', async ([_, owner, user, charity, unknownUser, unknownCha
 
     it('emits an event', async () => {
       const goalReached = true;
+      const reward = 1 * (10 ** 18)
       const { logs } = await this.fundRaising.raiseFunds(user, userId, charity, charityId, campaignId, donation, goalReached, { from: owner });
       const event = logs.find(e => e.event === 'EventFundsDonated');
       should.exist(event);
@@ -89,6 +90,7 @@ contract('FundRaising', async ([_, owner, user, charity, unknownUser, unknownCha
       event.args.campaignId.should.be.bignumber.equal(campaignId);
       event.args.amount.should.be.bignumber.equal(donation);
       event.args.goalReached.should.equal(goalReached);
+      event.args.reward.should.be.bignumber.equal(reward);
     });
   });
 });

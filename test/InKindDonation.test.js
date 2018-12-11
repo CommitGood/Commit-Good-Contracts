@@ -91,7 +91,7 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
   });
 
   describe('inKindDonationVerify', async () => {
-    const donation = 3;
+    const donation = 100;
 
     it('should fail if the user address is invalid', async () => {
       await this.inKindDonation.inKindDonationVerify(unknownUser, userId, charity, charityId, campaignId, donation, { from: owner }).should.be.rejectedWith(EVMRevert);
@@ -114,6 +114,7 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
     });
 
     it('emits an event', async () => {
+      const reward = 3 * (10 ** 18);
       const { logs } = await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, campaignId, donation, { from: owner });
       const event = logs.find(e => e.event === 'EventInKindDonationVerify');
       should.exist(event);
@@ -123,6 +124,7 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
       event.args.donation.should.be.bignumber.equal(donation);
+      event.args.reward.should.be.bignumber.equal(reward);
     });
   });
 });

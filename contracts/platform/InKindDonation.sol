@@ -49,8 +49,9 @@ contract InKindDonation is PlatformContract, Destructible {
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
      * @param donation the estimated amount by the charity of the in kind donation
+     * @param reward the reward amount
      */
-    event EventInKindDonationVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 donation);
+    event EventInKindDonationVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 donation, int256 reward);
 
     modifier isDonater(address _address) {
         require(registry.checkUser(_address), "Must be a valid donater");
@@ -118,15 +119,15 @@ contract InKindDonation is PlatformContract, Destructible {
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _donation) public isDonater(_donater) isCharity(_charity) validId(_donaterId) validId(_charityId) validId(_campaignId) onlyOwner returns (int256) {
-        int256 output = 0;
+        uint256 _donation) public isDonater(_donater) isCharity(_charity) validId(_donaterId) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
+        int256 reward = 0;
 
         if (_donation >= 100) {
-            output = rate + rateOfGood.getInKindRoG();
+            reward = rate + rateOfGood.getInKindRoG();
         }
 
-        emit EventInKindDonationVerify(_donater, _donaterId, _charity, _charityId, _campaignId, _donation);
+        emit EventInKindDonationVerify(_donater, _donaterId, _charity, _charityId, _campaignId, _donation, reward);
         
-        return output;
+        return true;
     }
 }

@@ -114,6 +114,7 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
     });
 
     it('emits an event', async () => {
+      const reward = 1 * (10 ** 18);
       const { logs } = await this.volunteer.volunteerVerify(user, userId, charity, charityId, campaignId, hours, { from: owner });
       const event = logs.find(e => e.event === 'EventVolunteerVerify');
       should.exist(event);
@@ -123,10 +124,7 @@ contract('Volunteer', async ([_, owner, user, charity, unknownUser, unknownChari
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
       event.args.time.should.be.bignumber.equal(hours);
-    });
-
-    it('should return output greater than 0 if the user volunteered enough hours', async () => {
-      const tx = await this.volunteer.volunteerVerify(user, userId, charity, charityId, campaignId, hours, { from: owner });
+      event.args.reward.should.be.bignumber.equal(reward);
     });
   });
 });
