@@ -33,27 +33,27 @@ contract InKindDonation is PlatformContract, Destructible {
 
     /**
      * @dev event for a in kind donation
-     * @param user public wallet address of the donator
-     * @param userId app generated unique id of the donator
+     * @param donor public wallet address of the donor
+     * @param donorId app generated unique id of the donor
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
      */
-    event EventInKindDonation(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId);
+    event EventInKindDonation(address indexed donor, uint256 donorId, address indexed charity, uint256 charityId, uint256 campaignId);
 
     /**
      * @dev event for volunteer verification
-     * @param user public wallet address of the volunteer
-     * @param userId app generated unique id of the volunteer
+     * @param donor public wallet address of the donor
+     * @param donorId app generated unique id of the donor
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
-     * @param donation the estimated amount by the charity of the in kind donation
+     * @param amount the estimated amount by the charity of the in kind donation
      * @param reward the reward amount
      */
-    event EventInKindDonationVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 donation, int256 reward);
+    event EventInKindDonationVerify(address indexed donor, uint256 donorId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 amount, int256 reward);
 
-    modifier isDonater(address _address) {
+    modifier isDonor(address _address) {
         require(registry.checkUser(_address), "Must be a valid donater");
         _;
     }
@@ -86,47 +86,47 @@ contract InKindDonation is PlatformContract, Destructible {
 
     /**
      * @dev applies that a user will donate to a charity
-     * @param _donater public wallet address of the donater
-     * @param _donaterId app generated unique id of the donater
+     * @param _donor public wallet address of the donor
+     * @param _donorId app generated unique id of the donor
      * @param _charity public wallet address of the charity
      * @param _charityId app generated unique id of the charity
      * @param _campaignId app generated unique id of the campaign
      */
     function inKindDonation(
-        address _donater,
-        uint256 _donaterId,
+        address _donor,
+        uint256 _donorId,
         address _charity,
         uint256 _charityId,
-        uint256 _campaignId) public isDonater(_donater) isCharity(_charity) validId(_donaterId) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
+        uint256 _campaignId) public isDonor(_donor) isCharity(_charity) validId(_donorId) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
 
-        emit EventInKindDonation(_donater, _donaterId, _charity, _charityId, _campaignId);
+        emit EventInKindDonation(_donor, _donorId, _charity, _charityId, _campaignId);
 
         return true;
     }
 
     /**
      * @dev commits that the user donated to a charity
-     * @param _donater public wallet address of the donater
-     * @param _donaterId app generated unique id of the donater
+     * @param _donor public wallet address of the donor
+     * @param _donorId app generated unique id of the donor
      * @param _charity public wallet address of the charity
      * @param _charityId app generated unique id of the charity
      * @param _campaignId app generated unique id of the campaign
-     * @param _donation the estimated amount by the charity of the in kind donation
+     * @param _amount the estimated amount by the charity of the in kind donation
      */
     function inKindDonationVerify(
-        address _donater, 
-        uint256 _donaterId, 
+        address _donor, 
+        uint256 _donorId, 
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
-        uint256 _donation) public isDonater(_donater) isCharity(_charity) validId(_donaterId) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
+        uint256 _amount) public isDonor(_donor) isCharity(_charity) validId(_donorId) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
         int256 reward = 0;
 
-        if (_donation >= 100) {
+        if (_amount >= 100) {
             reward = rate + rateOfGood.getInKindRoG();
         }
 
-        emit EventInKindDonationVerify(_donater, _donaterId, _charity, _charityId, _campaignId, _donation, reward);
+        emit EventInKindDonationVerify(_donor, _donorId, _charity, _charityId, _campaignId, _amount, reward);
         
         return true;
     }

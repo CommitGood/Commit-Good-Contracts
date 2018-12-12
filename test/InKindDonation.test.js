@@ -82,8 +82,8 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
       const { logs } = await this.inKindDonation.inKindDonation(user, userId, charity, charityId, campaignId, { from: owner });
       const event = logs.find(e => e.event === 'EventInKindDonation');
       should.exist(event);
-      event.args.user.should.equal(user);
-      event.args.userId.should.be.bignumber.equal(userId);
+      event.args.donor.should.equal(user);
+      event.args.donorId.should.be.bignumber.equal(userId);
       event.args.charity.should.equal(charity);
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
@@ -118,12 +118,12 @@ contract('InKindDonation', async ([_, owner, user, charity, unknownUser, unknown
       const { logs } = await this.inKindDonation.inKindDonationVerify(user, userId, charity, charityId, campaignId, donation, { from: owner });
       const event = logs.find(e => e.event === 'EventInKindDonationVerify');
       should.exist(event);
-      event.args.user.should.equal(user);
-      event.args.userId.should.be.bignumber.equal(userId);
+      event.args.donor.should.equal(user);
+      event.args.donorId.should.be.bignumber.equal(userId);
       event.args.charity.should.equal(charity);
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
-      event.args.donation.should.be.bignumber.equal(donation);
+      event.args.amount.should.be.bignumber.equal(donation);
       event.args.reward.should.be.bignumber.equal(reward);
     });
   });

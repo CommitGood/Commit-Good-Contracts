@@ -38,8 +38,8 @@ contract FundRaising is PlatformContract, Destructible {
 
     /**
      * @dev event for when a fund raiser campaign recieves a donation
-     * @param donator public wallet address of the donator
-     * @param donatorId app generated unique id of the donator
+     * @param donor public wallet address of the donor
+     * @param donorId app generated unique id of the donor
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
@@ -47,10 +47,10 @@ contract FundRaising is PlatformContract, Destructible {
      * @param goalReached lets us know if the goal was reached
      * @param reward the reward amount
      */
-    event EventFundsDonated(address donator, uint256 donatorId, address charity, uint256 charityId, uint256 campaignId, uint256 amount, bool goalReached, int256 reward);
+    event EventFundsDonated(address donor, uint256 donorId, address charity, uint256 charityId, uint256 campaignId, uint256 amount, bool goalReached, int256 reward);
 
-    modifier isDonator(address _address) {
-        require(registry.checkUser(_address), "Must be a valid donator");
+    modifier isDonor(address _address) {
+        require(registry.checkUser(_address), "Must be a valid donor");
         _;
     }
 
@@ -84,8 +84,8 @@ contract FundRaising is PlatformContract, Destructible {
 
     /**
      * @dev apply a donation to a fund raiser campaign
-     * @param _donator public wallet address of the donator
-     * @param _donatorId app generated unique id of the donator
+     * @param _donor public wallet address of the donor
+     * @param _donorId app generated unique id of the donor
      * @param _charity public wallet address of the charity
      * @param _charityId app generated unique id of the charity
      * @param _campaignId app generated unique id of the campaign
@@ -93,13 +93,13 @@ contract FundRaising is PlatformContract, Destructible {
      * @param _goalReached lets us know if the goal was reached
      */
     function raiseFunds(
-        address _donator, 
-        uint256 _donatorId, 
+        address _donor, 
+        uint256 _donorId, 
         address _charity, 
         uint256 _charityId, 
         uint256 _campaignId, 
         uint256 _amount,
-        bool _goalReached) public isDonator(_donator) validId(_donatorId) isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
+        bool _goalReached) public isDonor(_donor) validId(_donorId) isCharity(_charity) validId(_charityId) validId(_campaignId) onlyOwner returns (bool) {
         int256 reward = 0;
 
         if (_amount >= 10 && _amount <= 24) {
@@ -110,7 +110,7 @@ contract FundRaising is PlatformContract, Destructible {
             reward = rateC + rateOfGood.getFundRaisingRoG();
         }
 
-        emit EventFundsDonated(_donator, _donatorId, _charity, _charityId, _campaignId, _amount, _goalReached, reward);
+        emit EventFundsDonated(_donor, _donorId, _charity, _charityId, _campaignId, _amount, _goalReached, reward);
 
         return true;
     }

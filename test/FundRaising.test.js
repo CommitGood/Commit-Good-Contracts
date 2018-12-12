@@ -83,8 +83,8 @@ contract('FundRaising', async ([_, owner, user, charity, unknownUser, unknownCha
       const { logs } = await this.fundRaising.raiseFunds(user, userId, charity, charityId, campaignId, donation, goalReached, { from: owner });
       const event = logs.find(e => e.event === 'EventFundsDonated');
       should.exist(event);
-      event.args.donator.should.equal(user);
-      event.args.donatorId.should.be.bignumber.equal(userId);
+      event.args.donor.should.equal(user);
+      event.args.donorId.should.be.bignumber.equal(userId);
       event.args.charity.should.equal(charity);
       event.args.charityId.should.be.bignumber.equal(charityId);
       event.args.campaignId.should.be.bignumber.equal(campaignId);
