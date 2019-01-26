@@ -9,6 +9,7 @@ const Volunteer = artifacts.require("Volunteer");
 module.exports = deployer => {
     deployer.deploy(Registry)
         .then(() => Registry.deployed())
+        .then(instance => instance.authorizeCharity("0xf25726eae1221097469EcD7C741f7e206520A5dd", true))
         .then(() => deployer.deploy(RateOfGood))
         .then(() => RateOfGood.deployed())
         .then(() => deployer.deploy(Delivery, Registry.address, RateOfGood.address))
@@ -22,7 +23,7 @@ module.exports = deployer => {
         .then(() => deployer.deploy(CommitGoodToken))
         .then(() => CommitGoodToken.deployed())
         .then(instance => {
-            instance.setMintAgent(Delivery.address, true);        
+            instance.setMintAgent(Delivery.address, true);
             instance.setMintAgent(FundRaising.address, true);
             instance.setMintAgent(InKindDonation.address, true);
             instance.setMintAgent(Volunteer.address, true);

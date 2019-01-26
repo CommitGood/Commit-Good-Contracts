@@ -21,12 +21,17 @@ module.exports = {
     //   network_id: 1
     // }
   },
-  solc: {
-		optimizer: {
-			enabled: true,
-			runs: 200
-		}
-	},
+  compilers: {
+    solc: {
+      version: "^0.4.24",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200
+        }
+      }
+    }
+  }
   // mocha: {
   //   reporter: 'eth-gas-reporter',
   //   reporterOptions : {
