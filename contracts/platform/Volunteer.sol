@@ -33,25 +33,25 @@ contract Volunteer is PlatformContract, Destructible {
 
     /**
      * @dev event for a volunteer sign up
-     * @param user public wallet address of the volunteer
-     * @param userId app generated unique id of the volunteer
+     * @param volunteer public wallet address of the volunteer
+     * @param volunteerId app generated unique id of the volunteer
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
      */
-    event EventVolunteerSignUp(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId);
+    event EventVolunteerSignUp(address indexed volunteer, uint256 volunteerId, address indexed charity, uint256 charityId, uint256 campaignId);
 
     /**
      * @dev event for volunteer verification
-     * @param user public wallet address of the volunteer
-     * @param userId app generated unique id of the volunteer
+     * @param volunteer public wallet address of the volunteer
+     * @param volunteerId app generated unique id of the volunteer
      * @param charity public wallet address of the charity
      * @param charityId app generated unique id of the charity
      * @param campaignId app generated unique id of the campaign
      * @param time the amount of time volunteered
      * @param reward the reward amount
      */
-    event EventVolunteerVerify(address indexed user, uint256 userId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 time, int256 reward);
+    event EventVolunteerVerify(address indexed volunteer, uint256 volunteerId, address indexed charity, uint256 charityId, uint256 campaignId, uint256 time, int256 reward);
 
     modifier isVolunteer(address _address) {
         require(registry.checkUser(_address), "Must be a valid volunteer");
