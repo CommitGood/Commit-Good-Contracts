@@ -1,11 +1,8 @@
 pragma solidity ^0.4.24;
 
 import "../zeppelin/lifecycle/Destructible.sol";
-import "./Registry.sol";
-import "./RateOfGood.sol";
-import "./PlatformContract.sol";
 
-contract VendorPurchase is PlatformContract, Destructible {
+contract VendorPurchase is Destructible {
 
     /**
      * @dev event for delivery verification

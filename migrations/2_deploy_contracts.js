@@ -5,6 +5,7 @@ const Delivery = artifacts.require("Delivery");
 const FundRaising = artifacts.require("FundRaising");
 const InKindDonation = artifacts.require("InKindDonation");
 const Volunteer = artifacts.require("Volunteer");
+const VendorPurchase = artifacts.require("VendorPurchase");
 
 module.exports = deployer => {
     deployer.deploy(Registry)
@@ -20,6 +21,8 @@ module.exports = deployer => {
         .then(() => InKindDonation.deployed())
         .then(() => deployer.deploy(Volunteer, Registry.address, RateOfGood.address))
         .then(() => Volunteer.deployed())
+        .then(() => deployer.deploy(VendorPurchase))
+        .then(() => VendorPurchase.deployed())
         .then(() => deployer.deploy(CommitGoodToken))
         .then(() => CommitGoodToken.deployed())
         .then(instance => {
